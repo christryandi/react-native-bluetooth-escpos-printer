@@ -340,6 +340,8 @@ public class RNBluetoothManagerModule extends ReactContextBaseJavaModule
                 // When DeviceListActivity returns with a device to connect
                 if (resultCode == Activity.RESULT_OK) {
                     // Get the device MAC address
+                    // https://console.firebase.google.com/project/trofi-f145f/crashlytics/app/android:com.onstock.trofi/issues/54af4039460ce99a4c3b40ce24d18725?time=last-ninety-days&types=crash&versions=2.2.10%20(89);2.2.11%20(90);2.2.9%20(88)&sessionEventKey=6654B00E022400015FE9ADD5151CB2C5_1952157730907003934
+                    // TODO: Possible Intent have null value
                     String address = data.getExtras().getString(
                             EXTRA_DEVICE_ADDRESS);
                     // Get the BLuetoothDevice object
