@@ -213,6 +213,9 @@ public class RNBluetoothManagerModule extends ReactContextBaseJavaModule
     @ReactMethod
     public void connect(String address, final Promise promise) {
         BluetoothAdapter adapter = this.getBluetoothAdapter();
+        if(!BluetoothAdapter.checkBluetoothAddress(address)){
+            promise.reject("BT ADDRESS INVALID");
+        }
         if (adapter!=null && adapter.isEnabled()) {
             BluetoothDevice device = adapter.getRemoteDevice(address);
             promiseMap.put(PROMISE_CONNECT, promise);
@@ -226,6 +229,9 @@ public class RNBluetoothManagerModule extends ReactContextBaseJavaModule
     @ReactMethod
     public void disconnect(String address, final Promise promise){
         BluetoothAdapter adapter = this.getBluetoothAdapter();
+        if(!BluetoothAdapter.checkBluetoothAddress(address)){
+            promise.reject("BT ADDRESS INVALID");
+        }
         if (adapter!=null && adapter.isEnabled()) {
             BluetoothDevice device = adapter.getRemoteDevice(address);
             try {
@@ -243,6 +249,9 @@ public class RNBluetoothManagerModule extends ReactContextBaseJavaModule
     @ReactMethod
     public void unpaire(String address,final Promise promise){
         BluetoothAdapter adapter = this.getBluetoothAdapter();
+        if(!BluetoothAdapter.checkBluetoothAddress(address)){
+            promise.reject("BT ADDRESS INVALID");
+        }
         if (adapter!=null && adapter.isEnabled()) {
             BluetoothDevice device = adapter.getRemoteDevice(address);
             this.unpairDevice(device);
@@ -299,9 +308,7 @@ public class RNBluetoothManagerModule extends ReactContextBaseJavaModule
 
     }
 
-
-
-        private void unpairDevice(BluetoothDevice device) {
+    private void unpairDevice(BluetoothDevice device) {
         try {
             Method m = device.getClass()
                     .getMethod("removeBond", (Class[]) null);
