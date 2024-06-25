@@ -127,8 +127,7 @@ public class RNBluetoothManagerModule extends ReactContextBaseJavaModule
         }else if (!adapter.isEnabled()) {
             // If Bluetooth is not on, request that it be enabled.
             // setupChat() will then be called during onActivityResult
-            Intent enableIntent = new Intent(
-                    BluetoothAdapter.ACTION_REQUEST_ENABLE);
+            Intent enableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
             promiseMap.put(PROMISE_ENABLE_BT, promise);
             this.reactContext.startActivityForResult(enableIntent, REQUEST_ENABLE_BT, Bundle.EMPTY);
         } else {
