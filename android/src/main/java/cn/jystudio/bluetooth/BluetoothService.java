@@ -214,16 +214,16 @@ public class BluetoothService {
             BluetoothSocket tmp = null;
 
             // try to connect with socket inner method firstly.
-            for (int i = 1; i <= 3; i++) {
-                try {
-                    tmp = (BluetoothSocket) mmDevice.getClass().getMethod("createRfcommSocket", int.class).invoke(mmDevice, i);
-                } catch (Exception e) {
-                }
-                if (tmp != null) {
-                    mmSocket = tmp;
-                    break;
-                }
-            }
+            // for (int i = 1; i <= 3; i++) {
+            //     try {
+            //         tmp = (BluetoothSocket) mmDevice.getClass().getMethod("createRfcommSocket", int.class).invoke(mmDevice, i);
+            //     } catch (Exception e) {
+            //     }
+            //     if (tmp != null) {
+            //         mmSocket = tmp;
+            //         break;
+            //     }
+            // }
 
             // try with given uuid
             if (mmSocket == null) {
@@ -316,8 +316,10 @@ public class BluetoothService {
          */
         public void write(byte[] buffer) {
             try {
-                mmOutStream.write(buffer);
-                mmOutStream.flush();//清空缓存
+                if (mmOutStream != null) {
+                    mmOutStream.write(buffer);
+                    mmOutStream.flush();//清空缓存
+                }
                /* if (buffer.length > 3000) //
                 {
                   byte[] readata = new byte[1];
@@ -342,7 +344,9 @@ public class BluetoothService {
 
         public void cancel() {
             try {
-                mmSocket.close();
+                if (mmSocket != null) {
+                    mmSocket.close();
+                }
                 connectionLost();
             } catch (IOException e) {
                 Log.e(TAG, "close() of connect socket failed", e);

@@ -10,8 +10,8 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -127,8 +127,7 @@ public class RNBluetoothManagerModule extends ReactContextBaseJavaModule
         }else if (!adapter.isEnabled()) {
             // If Bluetooth is not on, request that it be enabled.
             // setupChat() will then be called during onActivityResult
-            Intent enableIntent = new Intent(
-                    BluetoothAdapter.ACTION_REQUEST_ENABLE);
+            Intent enableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
             promiseMap.put(PROMISE_ENABLE_BT, promise);
             this.reactContext.startActivityForResult(enableIntent, REQUEST_ENABLE_BT, Bundle.EMPTY);
         } else {
@@ -213,6 +212,9 @@ public class RNBluetoothManagerModule extends ReactContextBaseJavaModule
     @ReactMethod
     public void connect(String address, final Promise promise) {
         BluetoothAdapter adapter = this.getBluetoothAdapter();
+        if(!BluetoothAdapter.checkBluetoothAddress(address)){
+            promise.reject("BT ADDRESS INVALID");
+        }
         if (adapter!=null && adapter.isEnabled()) {
             BluetoothDevice device = adapter.getRemoteDevice(address);
             promiseMap.put(PROMISE_CONNECT, promise);
@@ -226,6 +228,9 @@ public class RNBluetoothManagerModule extends ReactContextBaseJavaModule
     @ReactMethod
     public void disconnect(String address, final Promise promise){
         BluetoothAdapter adapter = this.getBluetoothAdapter();
+        if(!BluetoothAdapter.checkBluetoothAddress(address)){
+            promise.reject("BT ADDRESS INVALID");
+        }
         if (adapter!=null && adapter.isEnabled()) {
             BluetoothDevice device = adapter.getRemoteDevice(address);
             try {
@@ -243,6 +248,9 @@ public class RNBluetoothManagerModule extends ReactContextBaseJavaModule
     @ReactMethod
     public void unpaire(String address,final Promise promise){
         BluetoothAdapter adapter = this.getBluetoothAdapter();
+        if(!BluetoothAdapter.checkBluetoothAddress(address)){
+            promise.reject("BT ADDRESS INVALID");
+        }
         if (adapter!=null && adapter.isEnabled()) {
             BluetoothDevice device = adapter.getRemoteDevice(address);
             this.unpairDevice(device);
@@ -299,9 +307,7 @@ public class RNBluetoothManagerModule extends ReactContextBaseJavaModule
 
     }
 
-
-
-        private void unpairDevice(BluetoothDevice device) {
+    private void unpairDevice(BluetoothDevice device) {
         try {
             Method m = device.getClass()
                     .getMethod("removeBond", (Class[]) null);
@@ -333,6 +339,8 @@ public class RNBluetoothManagerModule extends ReactContextBaseJavaModule
                 // When DeviceListActivity returns with a device to connect
                 if (resultCode == Activity.RESULT_OK) {
                     // Get the device MAC address
+                    // https://console.firebase.google.com/project/trofi-f145f/crashlytics/app/android:com.onstock.trofi/issues/54af4039460ce99a4c3b40ce24d18725?time=last-ninety-days&types=crash&versions=2.2.10%20(89);2.2.11%20(90);2.2.9%20(88)&sessionEventKey=6654B00E022400015FE9ADD5151CB2C5_1952157730907003934
+                    // TODO: Possible Intent have null value
                     String address = data.getExtras().getString(
                             EXTRA_DEVICE_ADDRESS);
                     // Get the BLuetoothDevice object
